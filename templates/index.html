@@ -1,0 +1,16 @@
+{% load django_filters_groups %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  {{ select_filter_form_media.css }}
+</head>
+<body>
+
+-------------start--------------
+{% filters_by_groups %}
+-------------------end-------------
+  {{ select_filter_form_media.js }}
+</body>
+</html>

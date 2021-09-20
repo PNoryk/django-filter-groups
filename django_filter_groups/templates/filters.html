@@ -1,0 +1,16 @@
+<div id="filters">
+  {{ select_filter_form.as_p }}
+
+    <div id="allFiltersByGroups">
+    {% for name, dct in groups.items %}
+      <div class="filter-lookup" data-filter-lookup="{{ name }}">
+          {{ dct.lookups_choice_form.as_p }}
+      </div>
+      <div data-filter-name="{{ name }}" class="filter-block">
+        {{ dct.filters_form.as_p }}
+      </div>
+    {% endfor %}
+  </div>
+  <div id="selectedFilters"></div>
+</div>
+{{ select_filter_form.media }}

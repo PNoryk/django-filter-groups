@@ -1,0 +1,33 @@
+.filter-lookup {
+  display: none;
+}
+
+.filter-lookup--selected {
+  display: block;
+}
+
+.filter-block {
+  position: relative;
+  display: none;
+}
+
+.filter-block--selected {
+  display: block;
+}
+
+.filter {
+  display: flex;
+  column-gap: 1rem;
+}
+
+.filter-group {
+  margin-top: 0;
+}
+
+.filter-remove-btn {
+  margin-bottom: auto;
+}
+
+.filter-remove-btn::after {
+  content: "x";
+}
