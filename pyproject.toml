@@ -1,13 +1,15 @@
 [tool.poetry]
-name = "django_filter_groups"
+name = "django-filter-groups"
 version = "0.1.0"
 description = ""
 authors = ["pnoryk <pnoryk@mail.ru>"]
+homepage = "https://github.com/PNoryk/django-filter-grouped"
 repository = "https://github.com/PNoryk/django-filter-groups"
 packages = [
     { include = "django_filter_groups" }
 ]
 include = ["readme.md", "LICENSE"]
+readme = "readme.md"
 
 [tool.poetry.dependencies]
 python = "^3.6"
