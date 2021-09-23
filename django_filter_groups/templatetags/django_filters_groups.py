@@ -1,6 +1,3 @@
-from itertools import groupby
-from operator import itemgetter
-
 from django import forms, template
 from django.utils.translation import gettext_lazy as _
 
@@ -12,14 +9,12 @@ register = template.Library()
 @register.inclusion_tag("filters.html", takes_context=True)
 def filters_by_groups(context, filterset_name="filter"):
     filter_set = context.get(filterset_name)
-    filters_groups_keys = [key.rsplit("__", 1) for key in filter_set.filters.keys()]
-    groups = [
-        {"field": field, "lookups": ["__".join(lookup_lst) for lookup_lst in data]}
-        for (field, data) in groupby(filters_groups_keys, itemgetter(0))
-    ]
     groups_with_filters = {}
-    for field_name, lookups in map(dict.values, groups):
-        current_filters = {fltr_key: fltr for fltr_key, fltr in filter_set.filters.items() if fltr_key in lookups}
+    for field_name, lookups in filter_set.get_fields().items():
+        current_filters = {}
+        for lookup in lookups:
+            filter_name = filter_set.get_filter_name(field_name, lookup)
+            current_filters[filter_name] = filter_set.filters[filter_name]
         groups_with_filters[field_name] = {"filters": list(current_filters.values())}
         groups_with_filters[field_name].update(
             {
