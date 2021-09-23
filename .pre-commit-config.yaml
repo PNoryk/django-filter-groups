@@ -25,7 +25,7 @@ repos:
           - --profile=black
           - --line-length=120
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.26.0
+    rev: v2.27.0
     hooks:
       - id: pyupgrade
         exclude: 'migrations'
@@ -59,6 +59,13 @@ repos:
     hooks:
       - id: commitizen
         stages: [commit-msg]
+  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
+    rev: '0.0.2' # Use the sha or tag you want to point at like 0.0.1
+    hooks:
+      - id: stylelint
+        args:
+          - --fix
+        additional_dependencies: [ 'stylelint@13.2.1', 'stylelint-config-twbs-bootstrap@2.2.3' ]
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: 'v7.32.0'
     hooks:

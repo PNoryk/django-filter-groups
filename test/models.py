@@ -8,3 +8,6 @@ class TestModel(models.Model):
     c = models.CharField(max_length=255)
     d = models.DateField()
     dt = models.DateTimeField()
+
+    def __str__(self):
+        return "Тестовая модель"
