@@ -5,10 +5,7 @@ description = ""
 authors = ["pnoryk <pnoryk@mail.ru>"]
 homepage = "https://github.com/PNoryk/django-filter-grouped"
 repository = "https://github.com/PNoryk/django-filter-groups"
-packages = [
-    { include = "django_filter_groups" }
-]
-include = ["readme.md", "LICENSE"]
+include = ["LICENSE"]
 readme = "readme.md"
 
 [tool.poetry.dependencies]
