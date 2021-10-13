@@ -1,16 +1,38 @@
+{% load i18n %}
 <div id="filters">
   {{ select_filter_form.as_p }}
 
-    <div id="allFiltersByGroups">
+  <div id="allFiltersByGroups">
     {% for name, dct in groups.items %}
-      <div class="filter-lookup" data-filter-lookup="{{ name }}">
+      {% if not dct.is_any_selected %}
+        <div class="filter-lookup" data-filter-lookup="{{ name }}">
           {{ dct.lookups_choice_form.as_p }}
-      </div>
+        </div>
+      {% endif %}
       <div data-filter-name="{{ name }}" class="filter-block">
-        {{ dct.filters_form.as_p }}
+        {% for form_dct in dct.filters_forms %}
+          {% if not form_dct.is_filter_selected %}
+            {{ form_dct.form.as_p }}
+          {% endif %}
+        {% endfor %}
       </div>
     {% endfor %}
   </div>
-  <div id="selectedFilters"></div>
+  <form method="{{ filters_request_method }}">
+    <div id="selectedFilters">
+      {% for name, dct in selected_groups.items %}
+        <div class="filter-lookup filter-lookup--selected" data-filter-lookup="{{ name }}">
+          {{ dct.lookups_choice_form.as_p }}
+        </div>
+        <div data-filter-name="{{ name }}" class="filter-block filter-block--selected">
+          {% for form_dct in dct.filters_forms %}
+            {% if form_dct.is_filter_selected %}
+              {{ form_dct.form.as_p }}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+    <button type="submit">{% translate "submit" %}</button>
+  </form>
 </div>
-{{ select_filter_form.media }}
