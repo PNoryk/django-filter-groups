@@ -1,4 +1,4 @@
-"""test_filters_groups URL Configuration
+"""example URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -16,5 +16,5 @@ Including another URLconf
 from django.urls import include, path
 
 urlpatterns = [
-    path("", include("test.urls")),
+    path("", include("app.urls")),
 ]

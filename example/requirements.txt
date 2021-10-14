@@ -1,0 +1,2 @@
+django >= 2
+django-filter >= 2.4.0
