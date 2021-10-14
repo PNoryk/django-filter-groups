@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 
 class SelectFilterForm(forms.Form):
@@ -6,7 +7,7 @@ class SelectFilterForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["filter"] = forms.ChoiceField(
             required=False,
-            label="Select a filter",
+            label=_("Select a filter"),
             choices=[["", "------"]] + [[k, v["verbose_name"]] for k, v in groups_with_filters.items()],
         )
 
