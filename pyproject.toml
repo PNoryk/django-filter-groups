@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-filter-groups"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 authors = ["pnoryk <pnoryk@mail.ru>"]
 homepage = "https://github.com/PNoryk/django-filter-groups"
