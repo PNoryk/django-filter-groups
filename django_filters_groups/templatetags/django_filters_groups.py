@@ -15,7 +15,7 @@ def _get_current_filters(filter_set, field_name, lookups):
     return current_filters
 
 
-@register.inclusion_tag("filters.html", takes_context=True)
+@register.inclusion_tag("django_filters_groups/filters.html", takes_context=True)
 def filters_by_groups(context, filterset_name="filter", request_method="GET"):
     filter_set = context.get(filterset_name)
     filters_data = getattr(context["request"], request_method, {}) or {}
