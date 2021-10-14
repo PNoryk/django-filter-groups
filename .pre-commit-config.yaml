@@ -73,7 +73,7 @@ repos:
         args:
           - --fix
         additional_dependencies: [ 'eslint@7.32.0', 'eslint-config-prettier', 'eslint-plugin-prettier' ]
-        files: 'django_filter_groups/'
+        files: 'django_filters_groups/'
         exclude: 'min.js$'
   - repo: https://github.com/thibaudcolas/curlylint
     rev: v0.13.0

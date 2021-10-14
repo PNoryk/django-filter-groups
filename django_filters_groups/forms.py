@@ -13,6 +13,6 @@ class SelectFilterForm(forms.Form):
     @property
     def media(self):
         return forms.Media(
-            css={"screen": ("django_filter_groups/filter.css",)},
-            js=("django_filter_groups/filter-defaults.js", "django_filter_groups/filter.js"),
+            css={"screen": ("django_filters_groups/filter.css",)},
+            js=("django_filters_groups/filter-defaults.js", "django_filters_groups/filter.js"),
         )

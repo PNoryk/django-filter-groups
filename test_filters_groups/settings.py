@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "django_filters",
-    "django_filter_groups",
+    "django_filters_groups",
     "test",
 ]
 

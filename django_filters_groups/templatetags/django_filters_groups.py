@@ -1,7 +1,7 @@
 from django import forms, template
 from django.utils.translation import gettext_lazy as _
 
-from django_filter_groups.forms import SelectFilterForm
+from django_filters_groups.forms import SelectFilterForm
 
 register = template.Library()
 

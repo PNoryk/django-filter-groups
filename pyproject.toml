@@ -7,6 +7,9 @@ homepage = "https://github.com/PNoryk/django-filter-groups"
 repository = "https://github.com/PNoryk/django-filter-groups"
 include = ["LICENSE"]
 readme = "readme.md"
+packages = [
+  { include = "django_filters_groups" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.6.1"
