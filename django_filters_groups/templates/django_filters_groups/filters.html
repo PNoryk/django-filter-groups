@@ -18,7 +18,7 @@
       </div>
     {% endfor %}
   </div>
-  <form method="{{ filters_request_method }}">
+  <form method="get">
     <div id="selectedFilters">
       {% for name, dct in selected_groups.items %}
         <div class="filter-lookup filter-lookup--selected" data-filter-lookup="{{ name }}">

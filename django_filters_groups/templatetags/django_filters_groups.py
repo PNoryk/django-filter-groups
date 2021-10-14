@@ -16,9 +16,9 @@ def _get_current_filters(filter_set, field_name, lookups):
 
 
 @register.inclusion_tag("django_filters_groups/filters.html", takes_context=True)
-def filters_by_groups(context, filterset_name="filter", request_method="GET"):
-    filter_set = context.get(filterset_name)
-    filters_data = getattr(context["request"], request_method, {}) or {}
+def filters_by_groups(context, filterset="filter"):
+    filter_set = context.get(filterset) if isinstance(filterset, str) else filterset
+    filters_data = context["request"].GET
     selected_fields_names = []
     if filters_data:
         selected_fields_names = [
@@ -69,5 +69,4 @@ def filters_by_groups(context, filterset_name="filter", request_method="GET"):
         "groups": groups_with_filters,
         "selected_groups": selected_groups_with_filters,
         "select_filter_form": select_filter_form,
-        "filters_request_method": request_method,
     }
