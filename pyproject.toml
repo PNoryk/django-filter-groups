@@ -6,7 +6,7 @@ authors = ["pnoryk <pnoryk@mail.ru>"]
 homepage = "https://github.com/PNoryk/django-filter-groups"
 repository = "https://github.com/PNoryk/django-filter-groups"
 include = ["LICENSE"]
-readme = "readme.md"
+readme = "README.md"
 packages = [
   { include = "django_filters_groups" }
 ]
