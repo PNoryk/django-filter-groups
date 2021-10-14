@@ -8,6 +8,9 @@
 
 .filter-block {
   position: relative;
+}
+
+.filter-block > *:not(.filter) {
   display: none;
 }
 

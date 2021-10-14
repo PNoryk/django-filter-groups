@@ -18,6 +18,18 @@ function _removeFromSelect(select, index) {
   }
 }
 
+function _removeFilter(selectedFilters, filterLookup) {
+  let filter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}] .filter`);
+  if (filter) {
+    let filterGroup = filter.querySelector(".filter-group");
+    let filterBlock = filter.closest(".filter-block");
+    filterBlock.append(filterGroup);
+    filter.remove();
+    filterGroup.classList.remove("filter-group");
+    filterBlock.querySelectorAll(":disabled").forEach((el) => el.removeAttribute("disabled"));
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let allFilters = document.getElementById("allFiltersByGroups");
 
@@ -57,10 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedElements = {
       lookup: document.querySelector(`[data-filter-lookup=${selectedValue}]`),
       filters: document.querySelector(`[data-filter-name=${selectedValue}]`).cloneNode(false),
+      wrapper: document.querySelector(`[data-filter-lookup=${selectedValue}]`).closest(".filter-wrapper"),
     };
-    for (let el of Object.values(selectedElements)) {
-      selectedFilters.appendChild(el);
-    }
+    selectedFilters.appendChild(selectedElements.wrapper);
     selectedElements.lookup.classList.add("filter-lookup--selected");
     selectedElements.filters.classList.add("filter-block--selected");
   });
@@ -69,36 +80,28 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("change", (e) => {
       let selectedValue = e.target.selectedOptions[0].value;
       let filterLookup = el.dataset.filterLookup;
-      let blockToAddFilters = selectedFilters.querySelector(`[data-filter-name=${filterLookup}]`);
-      let currentElementFilters = allFilters.querySelector(`[data-filter-name=${filterLookup}]`);
+      let blockToSelectFilter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}]`);
 
       if (selectedValue) {
         if (selectedValue === "exact") {
           selectedValue = "";
         }
-        let filterToAdd = currentElementFilters.querySelector(
-          `[name=${[filterLookup, selectedValue].filter(Boolean).join("__")}`
+        _removeFilter(selectedFilters, filterLookup);
+        let filterToSelect = blockToSelectFilter.querySelector(
+          `[name=${[filterLookup, selectedValue].filter(Boolean).join("__")}]`
+        );
+        [...blockToSelectFilter.querySelectorAll(`[name^=${filterLookup}]`)].map(
+          (el) => el !== filterToSelect && el.setAttribute("disabled", "")
         );
         let rowWithRemoveButton = document.createElement("div");
         rowWithRemoveButton.className = "filter";
 
-        let group = filterToAdd.closest(filterDefaults.filterWrapperSelector);
+        let group = filterToSelect.closest(filterDefaults.filterWrapperSelector);
         group.classList.add("filter-group");
-
-        rowWithRemoveButton.appendChild(group);
+        _wrapElement(group, rowWithRemoveButton);
         rowWithRemoveButton.appendChild(_createRemoveButton());
-
-        let oldFilter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}] .filter`);
-        if (oldFilter) {
-          currentElementFilters.appendChild(oldFilter.querySelector(".filter-group"));
-          oldFilter.remove();
-        }
-
-        blockToAddFilters.appendChild(rowWithRemoveButton);
-      } else if (currentElementFilters) {
-        let filter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}] .filter`);
-        currentElementFilters.appendChild(filter.querySelector(".filter-group"));
-        filter.remove();
+      } else if (blockToSelectFilter) {
+        _removeFilter(selectedFilters, filterLookup);
       }
     });
   });
@@ -106,18 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
   selectedFilters.addEventListener("click", (e) => {
     let target = e.target;
     if (target.classList.contains("filter-remove-btn")) {
-      let filterBlock = target.closest("[data-filter-name]");
-      let filterName = filterBlock.dataset.filterName;
-      let filter = filterBlock.querySelector(`[name^=${filterName}]`).closest(filterDefaults.filterWrapperSelector);
-
-      filter.classList.remove("filter-group");
-      allFilters.querySelector(`[data-filter-name=${filterName}]`).appendChild(filter);
-      selectedFilters.querySelector(`[data-filter-name=${filterName}]`).remove();
-
-      let lookupGroup = selectedFilters.querySelector(`[data-filter-lookup=${filterName}]`);
+      let filterWrapper = target.closest(".filter-wrapper");
+      let filterName = target.closest("[data-filter-name]").dataset.filterName;
+      _removeFilter(selectedFilters, filterName);
+      allFilters.appendChild(filterWrapper);
+      let lookupGroup = filterWrapper.querySelector(".filter-lookup--selected");
       lookupGroup.classList.remove("filter-lookup--selected");
       lookupGroup.querySelector("select").selectedIndex = 0;
-      allFilters.appendChild(lookupGroup);
 
       filterSelect.add(filterSelectInitialOptions.filter((el) => el.value === filterName)[0]);
       filterSelect.selectedIndex = 0;
