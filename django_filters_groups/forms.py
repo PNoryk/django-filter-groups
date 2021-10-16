@@ -3,7 +3,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class SelectFilterForm(forms.Form):
-    def __init__(self, groups_with_filters, *args, **kwargs):
+    def __init__(self, groups_with_filters, filterset_media, *args, **kwargs):
+        self.filterset_media = filterset_media
         super().__init__(*args, **kwargs)
         self.fields["filter"] = forms.ChoiceField(
             required=False,
@@ -13,7 +14,7 @@ class SelectFilterForm(forms.Form):
 
     @property
     def media(self):
-        return forms.Media(
+        return self.filterset_media + forms.Media(
             css={"screen": ("django_filters_groups/filter.css",)},
             js=("django_filters_groups/filter-defaults.js", "django_filters_groups/filter.js"),
         )

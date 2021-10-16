@@ -63,7 +63,7 @@ def filters_by_groups(context, filterset="filter"):
             ],
         }
     selected_groups_with_filters = {k: v for k, v in groups_with_filters.items() if v["is_any_selected"]}
-    select_filter_form = SelectFilterForm(groups_with_filters, filters_data or None)
+    select_filter_form = SelectFilterForm(groups_with_filters, filter_set.form.media, filters_data or None)
     context["select_filter_form"] = select_filter_form
     return {
         "groups": groups_with_filters,
