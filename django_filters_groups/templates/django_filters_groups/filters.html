@@ -8,7 +8,7 @@
         <div class="filter-lookup" data-filter-lookup="{{ name }}">
           {{ dct.lookups_choice_form.as_p }}
         </div>
-        <div data-filter-name="{{ name }}" class="filter-block">
+        <div class="filter-block" data-filter-name="{{ name }}">
           {% for form_dct in dct.filters_forms %}
             {{ form_dct.form.as_p }}
           {% endfor %}
@@ -23,7 +23,7 @@
           <div class="filter-lookup filter-lookup--selected" data-filter-lookup="{{ name }}">
             {{ dct.lookups_choice_form.as_p }}
           </div>
-          <div data-filter-name="{{ name }}" class="filter-block filter-block--selected">
+          <div class="filter-block filter-block--selected" data-filter-name="{{ name }}" >
             {% for form_dct in dct.filters_forms %}
               {{ form_dct.form.as_p }}
             {% endfor %}
