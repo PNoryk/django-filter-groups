@@ -11,8 +11,8 @@ function _wrapElement(element, wrapperElement) {
   wrapper.appendChild(element);
 }
 
-function _removeFilter(selectedFilters, filterLookup) {
-  let filter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}] .filter`);
+function _removeFilter(selectedFilters, filterName) {
+  let filter = selectedFilters.querySelector(`[data-filter-name=${filterName}] .filter`);
   if (filter) {
     let filterGroup = filter.querySelector(".filter-group");
     filterGroup.querySelector("[name]").value = "";
@@ -81,19 +81,19 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-filter-lookup]").forEach((el) => {
     el.addEventListener("change", (e) => {
       let selectedValue = e.target.selectedOptions[0].value;
-      let filterLookup = el.dataset.filterLookup;
+      let filterName = el.dataset.filterLookup;
       let filterWrapper = el.closest(".filter-wrapper");
-      let blockToSelectFilter = filterWrapper.querySelector(`[data-filter-name=${filterLookup}]`);
+      let blockToSelectFilter = filterWrapper.querySelector(`[data-filter-name=${filterName}]`);
 
       if (selectedValue) {
         if (selectedValue === "exact") {
           selectedValue = "";
         }
-        _removeFilter(selectedFilters, filterLookup);
+        _removeFilter(selectedFilters, filterName);
         let filterToSelect = blockToSelectFilter.querySelector(
-          `[name=${[filterLookup, selectedValue].filter(Boolean).join("__")}]`
+          `[name=${[filterName, selectedValue].filter(Boolean).join("__")}]`
         );
-        [...filterWrapper.querySelectorAll(`[name^=${filterLookup}]`)].forEach((el) => {
+        [...filterWrapper.querySelectorAll(`[name^=${filterName}]`)].forEach((el) => {
           if (el !== filterToSelect) {
             el.disabled = true;
           }
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         _wrapElement(group, rowWithRemoveButton);
         rowWithRemoveButton.appendChild(_createRemoveButton());
       } else if (blockToSelectFilter) {
-        _removeFilter(selectedFilters, filterLookup);
+        _removeFilter(selectedFilters, filterName);
       }
     });
   });
