@@ -126,4 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
       selectToChooseFilter.selectedIndex = 0;
     }
   });
+
+  document.getElementById("clearFilters").addEventListener("click", () => {
+    let data = new FormData();
+    document
+      .getElementById("filters")
+      .querySelectorAll("form [name]")
+      .forEach((el) => data.append(el.getAttribute("name"), el.value));
+    let params = new URLSearchParams(location.search);
+    for (let key of data.keys()) {
+      params.delete(key);
+    }
+    location.search = params.toString();
+  });
 });
