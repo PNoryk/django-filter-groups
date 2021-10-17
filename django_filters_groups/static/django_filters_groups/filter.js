@@ -11,13 +11,6 @@ function _wrapElement(element, wrapperElement) {
   wrapper.appendChild(element);
 }
 
-function _removeFromSelect(select, index) {
-  select.remove(index);
-  if (select.options.length === 1) {
-    select.removeAttribute("required");
-  }
-}
-
 function _removeFilter(selectedFilters, filterLookup) {
   let filter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}] .filter`);
   if (filter) {
@@ -26,21 +19,30 @@ function _removeFilter(selectedFilters, filterLookup) {
     filterBlock.append(filterGroup);
     filter.remove();
     filterGroup.classList.remove("filter-group");
-    filterBlock.querySelectorAll(":disabled").forEach((el) => el.removeAttribute("disabled"));
+    filterBlock.querySelectorAll(":disabled").forEach((el) => (el.disabled = false));
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   let allFilters = document.getElementById("allFiltersByGroups");
 
-  let filterSelect = document.getElementById("id_filter");
-  let filterSelectInitialOptions = [...filterSelect.options];
+  let selectToChooseFilter = document.getElementById("id_filter");
+  let filterSelectInitialOptions = [...selectToChooseFilter.options];
 
   let selectedFilters = document.getElementById("selectedFilters");
-  for (const element of selectedFilters.querySelectorAll(".filter-block")) {
-    let filterName = element.dataset.filterName;
-    let filter = element.querySelector(`[name^=${filterName}`);
-    let elementToWrap = filter.closest(filterDefaults.filterWrapperSelector);
+  for (const element of selectedFilters.querySelectorAll(".filter-wrapper")) {
+    let filterLookupBlock = element.querySelector(".filter-lookup");
+    let filterName = filterLookupBlock.dataset.filterLookup;
+    let selectedFilterNameArray = [filterName];
+    let selectedLookup = filterLookupBlock.querySelector("select").selectedOptions[0].value;
+    if (selectedLookup && selectedLookup !== "exact") {
+      selectedFilterNameArray.push(selectedLookup);
+    }
+    let selectedFilterName = selectedFilterNameArray.join("__");
+
+    // wrap applied filters with .filter and .filter-group classes
+    let SelectedFilter = element.querySelector(`[name=${selectedFilterName}`);
+    let elementToWrap = SelectedFilter.closest(filterDefaults.filterWrapperSelector);
     elementToWrap.classList.add("filter-group");
 
     let wrapper = document.createElement("div");
@@ -48,23 +50,21 @@ document.addEventListener("DOMContentLoaded", () => {
     _wrapElement(elementToWrap, wrapper);
     wrapper.appendChild(_createRemoveButton());
 
-    // remove selected from available to choose filter
-    let selectedOptionIndex = [...filterSelect.options].findIndex((el) => el.value === filterName);
-    _removeFromSelect(filterSelect, selectedOptionIndex);
+    // disable unselected filters for current element
+    element.querySelectorAll(`.filter-block [name^=${filterName}]`).forEach((el) => {
+      if (el !== SelectedFilter) {
+        el.disabled = true;
+      }
+    });
 
-    // Select lookup in applied filters
-    let lookupSelect = selectedFilters.querySelector(`[data-filter-lookup=${filterName}] select`);
-    let selectedLookupArray = filter.getAttribute("name").split("__");
-    let lookupToFind = selectedLookupArray[selectedLookupArray.length - 1];
-    if (selectedLookupArray.length === 1) {
-      lookupToFind = "exact";
-    }
-    lookupSelect.selectedIndex = [...lookupSelect.options].findIndex((el) => el.value === lookupToFind);
+    // remove selected from available to choose filter
+    let selectedOptionIndex = [...selectToChooseFilter.options].findIndex((el) => el.value === filterName);
+    selectToChooseFilter.remove(selectedOptionIndex);
   }
 
-  filterSelect.addEventListener("change", (e) => {
+  selectToChooseFilter.addEventListener("change", (e) => {
     let selectedValue = e.target.selectedOptions[0].value;
-    _removeFromSelect(filterSelect, e.target.selectedIndex);
+    selectToChooseFilter.remove(e.target.selectedIndex);
 
     let selectedElements = {
       lookup: document.querySelector(`[data-filter-lookup=${selectedValue}]`),
@@ -76,11 +76,13 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedElements.filters.classList.add("filter-block--selected");
   });
 
+  // select/change filter lookup
   document.querySelectorAll("[data-filter-lookup]").forEach((el) => {
     el.addEventListener("change", (e) => {
       let selectedValue = e.target.selectedOptions[0].value;
       let filterLookup = el.dataset.filterLookup;
-      let blockToSelectFilter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}]`);
+      let filterWrapper = el.closest(".filter-wrapper");
+      let blockToSelectFilter = filterWrapper.querySelector(`[data-filter-name=${filterLookup}]`);
 
       if (selectedValue) {
         if (selectedValue === "exact") {
@@ -90,9 +92,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let filterToSelect = blockToSelectFilter.querySelector(
           `[name=${[filterLookup, selectedValue].filter(Boolean).join("__")}]`
         );
-        [...blockToSelectFilter.querySelectorAll(`[name^=${filterLookup}]`)].map(
-          (el) => el !== filterToSelect && el.setAttribute("disabled", "")
-        );
+        [...filterWrapper.querySelectorAll(`[name^=${filterLookup}]`)].forEach((el) => {
+          if (el !== filterToSelect) {
+            el.disabled = true;
+          }
+        });
         let rowWithRemoveButton = document.createElement("div");
         rowWithRemoveButton.className = "filter";
 
@@ -106,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // remove filter button click
   selectedFilters.addEventListener("click", (e) => {
     let target = e.target;
     if (target.classList.contains("filter-remove-btn")) {
@@ -117,8 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
       lookupGroup.classList.remove("filter-lookup--selected");
       lookupGroup.querySelector("select").selectedIndex = 0;
 
-      filterSelect.add(filterSelectInitialOptions.filter((el) => el.value === filterName)[0]);
-      filterSelect.selectedIndex = 0;
+      selectToChooseFilter.add(filterSelectInitialOptions.filter((el) => el.value === filterName)[0]);
+      selectToChooseFilter.selectedIndex = 0;
     }
   });
 });

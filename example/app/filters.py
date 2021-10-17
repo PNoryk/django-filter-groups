@@ -1,8 +1,11 @@
 from app.models import TestModel
-from django_filters import FilterSet
+from django_filters import CharFilter, FilterSet
 
 
 class MyFilterSet(FilterSet):
+    f_field__name = CharFilter()
+    f_field__name__istartswith = CharFilter(lookup_expr="istartswith")
+
     class Meta:
         model = TestModel
         fields = {
