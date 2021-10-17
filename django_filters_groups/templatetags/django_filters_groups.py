@@ -1,11 +1,14 @@
 from collections import defaultdict
 
 from django import forms, template
-from django.utils.translation import gettext_lazy as _
+from django_filters.conf import settings as django_filters_settings
+from django_filters.utils import label_for_filter
 
 from django_filters_groups.forms import SelectFilterForm
 
 register = template.Library()
+
+FILTERS_VERBOSE_LOOKUPS = django_filters_settings.VERBOSE_LOOKUPS
 
 
 def _get_current_filters(filter_set, field_name, lookups):
@@ -49,11 +52,14 @@ def filters_by_groups(context, filterset="filter"):
                 (forms.Form,),
                 {
                     "prefix": lookup_form_prefix,
-                    field_name: forms.ChoiceField(
+                    label_for_filter(filter_set._meta.model, field_name, None): forms.ChoiceField(
                         choices=[
                             *(
                                 [["", "--------"]]
-                                + [[lookup, _(filter_.lookup_expr)] for lookup, filter_ in group_dct.items()]
+                                + [
+                                    [lookup, FILTERS_VERBOSE_LOOKUPS.get(filter_.lookup_expr, filter_.lookup_expr)]
+                                    for lookup, filter_ in group_dct.items()
+                                ]
                             )
                         ]
                     ),
