@@ -125,6 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       selectToChooseFilter.add(filterSelectInitialOptions.filter((el) => el.value === filterName)[0]);
       selectToChooseFilter.selectedIndex = 0;
+
+      if (filterDefaults.submitOnFilterDelete) {
+        document.getElementById("submitFilters").click();
+      }
     }
   });
 
