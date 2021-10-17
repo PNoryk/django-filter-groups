@@ -17,10 +17,15 @@ INSTALLED_APPS = [
 ]
 ```
 
-use it in your template `{% filters_by_groups %}` \
-add `{{ select_filter_form.media }}` after adding template tag
+use it in your template:
+- add `{% add_select_filter_form_to_context %}` to the top of your template. 
+  It allows you to place `{{ select_filter_form.media }}` anywhere you want
+- add `{% filters_by_groups %}`
+- add `{{ select_filter_form.media }}`
 
 If FilterSet name is not 'filter' -> add filterset \
+`{% add_select_filter_form_to_context my_custom_filterset %}`\
 `{% filters_by_groups my_custom_filterset %}`
 or filterset name
 `{% filters_by_groups "my_custom_filterset" %}`
+`{% add_select_filter_form_to_context "my_custom_filterset" %}`

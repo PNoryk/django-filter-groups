@@ -20,8 +20,7 @@ def _get_current_filters(filter_set, field_name, lookups):
     return current_filters
 
 
-@register.inclusion_tag("django_filters_groups/filters.html", takes_context=True)
-def filters_by_groups(context, filterset="filter"):
+def _filters_by_groups(context, filterset="filter"):
     filter_set = context.get(filterset) if isinstance(filterset, str) else filterset
     filters_data = context["request"].GET
     lookup_form_prefix = "lookup_choice"
@@ -89,13 +88,26 @@ def filters_by_groups(context, filterset="filter"):
                 for lookup_name, filter_ in group_dct.items()
             ],
         }
-    selected_groups_with_filters = {
-        lookup: filter_ for lookup, filter_ in groups_with_filters.items() if lookup in selected_fields
-    }
+    selected_groups_with_filters = {}
+    rest_groups = {}
+    for lookup, filter_ in groups_with_filters.items():
+        dct_to_add = rest_groups
+        if lookup in selected_fields:
+            dct_to_add = selected_groups_with_filters
+        dct_to_add[lookup] = filter_
     select_filter_form = SelectFilterForm(groups_with_filters, filter_set.form.media, filters_data or None)
-    context["select_filter_form"] = select_filter_form
     return {
-        "groups": {lookup: filter_ for lookup, filter_ in groups_with_filters.items() if lookup not in selected_fields},
+        "groups": rest_groups,
         "selected_groups": selected_groups_with_filters,
         "select_filter_form": select_filter_form,
     }
+
+
+@register.simple_tag(takes_context=True)
+def add_select_filter_form_to_context(context, filterset="filter"):
+    context["select_filter_form"] = _filters_by_groups(context, filterset)["select_filter_form"]
+
+
+@register.inclusion_tag("django_filters_groups/filters.html", takes_context=True)
+def filters_by_groups(context, filterset="filter"):
+    return _filters_by_groups(context, filterset)
