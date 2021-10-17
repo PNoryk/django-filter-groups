@@ -29,3 +29,18 @@ If FilterSet name is not 'filter' -> add filterset \
 or filterset name
 `{% filters_by_groups "my_custom_filterset" %}`
 `{% add_select_filter_form_to_context "my_custom_filterset" %}`
+
+
+## default settings
+
+```
+# django settings
+FILTERS_GROUPS_SELECT_FILTER_FORM_LABEL = "Select a label"
+```
+```js
+// static/django_filters_groups/filter-defaults.js
+let filterDefaults = {
+  filterWrapperSelector: "p", // p is necessary when you use {{ form.as_p }}
+  submitOnFilterDelete: false,
+};
+```
