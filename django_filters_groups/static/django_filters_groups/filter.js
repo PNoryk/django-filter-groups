@@ -15,6 +15,7 @@ function _removeFilter(selectedFilters, filterLookup) {
   let filter = selectedFilters.querySelector(`[data-filter-name=${filterLookup}] .filter`);
   if (filter) {
     let filterGroup = filter.querySelector(".filter-group");
+    filterGroup.querySelector("[name]").value = "";
     let filterBlock = filter.closest(".filter-block");
     filterBlock.append(filterGroup);
     filter.remove();

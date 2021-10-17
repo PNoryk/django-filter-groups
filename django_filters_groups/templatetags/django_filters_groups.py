@@ -89,7 +89,7 @@ def filters_by_groups(context, filterset="filter"):
     select_filter_form = SelectFilterForm(groups_with_filters, filter_set.form.media, filters_data or None)
     context["select_filter_form"] = select_filter_form
     return {
-        "groups": groups_with_filters,
+        "groups": {lookup: filter_ for lookup, filter_ in groups_with_filters.items() if lookup not in selected_fields},
         "selected_groups": selected_groups_with_filters,
         "select_filter_form": select_filter_form,
     }
