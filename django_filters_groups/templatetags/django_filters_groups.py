@@ -39,7 +39,7 @@ def _filters_by_groups(context, filterset="filter"):
         group_name = filter_.field_name
         group_ends_with = f"__{filter_.lookup_expr}"
         if group_name.endswith(group_ends_with):
-            group_name = group_name[: len(group_ends_with)]
+            group_name = group_name[: -len(group_ends_with)]
         filters_by_groups_[group_name][filter_.lookup_expr] = filter_
     groups_with_filters = {}
     for field_name, group_dct in filters_by_groups_.items():
@@ -51,16 +51,22 @@ def _filters_by_groups(context, filterset="filter"):
                 (forms.Form,),
                 {
                     "prefix": lookup_form_prefix,
-                    label_for_filter(filter_set._meta.model, field_name, None): forms.ChoiceField(
+                    field_name: forms.ChoiceField(
+                        label=label_for_filter(filter_set._meta.model, field_name, None),
                         choices=[
                             *(
                                 [["", "--------"]]
                                 + [
-                                    [lookup, FILTERS_VERBOSE_LOOKUPS.get(filter_.lookup_expr, filter_.lookup_expr)]
+                                    [
+                                        lookup,
+                                        FILTERS_VERBOSE_LOOKUPS.get(
+                                            filter_.lookup_expr, filter_.lookup_expr
+                                        ).capitalize(),
+                                    ]
                                     for lookup, filter_ in group_dct.items()
                                 ]
                             )
-                        ]
+                        ],
                     ),
                 },
             )(filters_data if is_field_selected else None),
@@ -105,7 +111,8 @@ def _filters_by_groups(context, filterset="filter"):
 
 @register.simple_tag(takes_context=True)
 def add_select_filter_form_to_context(context, filterset="filter"):
-    context["select_filter_form"] = _filters_by_groups(context, filterset)["select_filter_form"]
+    context.dicts[0]["select_filter_form"] = _filters_by_groups(context, filterset)["select_filter_form"]
+    return ""
 
 
 @register.inclusion_tag("django_filters_groups/filters.html", takes_context=True)
