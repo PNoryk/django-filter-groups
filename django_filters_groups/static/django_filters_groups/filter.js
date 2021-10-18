@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       filters: document.querySelector(`[data-filter-name=${selectedValue}]`).cloneNode(false),
       wrapper: document.querySelector(`[data-filter-lookup=${selectedValue}]`).closest(".filter-wrapper"),
     };
-    selectedFilters.appendChild(selectedElements.wrapper);
+    selectedFilters.insertBefore(selectedElements.wrapper, selectedFilters.querySelector(".filter-button"));
     selectedElements.lookup.classList.add("filter-lookup--selected");
     selectedElements.filters.classList.add("filter-block--selected");
   });

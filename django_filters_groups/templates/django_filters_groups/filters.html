@@ -16,22 +16,20 @@
       </div>
     {% endfor %}
   </div>
-  <form method="get">
-    <div id="selectedFilters">
-      {% for name, dct in selected_groups.items %}
-        <div class="filter-wrapper">
-          <div class="filter-lookup filter-lookup--selected" data-filter-lookup="{{ name }}">
-            {{ dct.lookups_choice_form.as_p }}
-          </div>
-          <div class="filter-block filter-block--selected" data-filter-name="{{ name }}" >
-            {% for form_dct in dct.filters_forms %}
-              {{ form_dct.form.as_p }}
-            {% endfor %}
-          </div>
+  <form method="get" id="selectedFilters">
+    {% for name, dct in selected_groups.items %}
+      <div class="filter-wrapper">
+        <div class="filter-lookup filter-lookup--selected" data-filter-lookup="{{ name }}">
+          {{ dct.lookups_choice_form.as_p }}
         </div>
-      {% endfor %}
-    </div>
-    <button type="submit" id="submitFilters">{% translate "submit" %}</button>
-    <button type="button" id="clearFilters">{% translate "clear" %}</button>
+        <div class="filter-block filter-block--selected" data-filter-name="{{ name }}" >
+          {% for form_dct in dct.filters_forms %}
+            {{ form_dct.form.as_p }}
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+    <button class="filter-button" type="submit" id="submitFilters">{% translate "submit" %}</button>
+    <button class="filter-button" type="button" id="clearFilters">{% translate "clear" %}</button>
   </form>
 </div>

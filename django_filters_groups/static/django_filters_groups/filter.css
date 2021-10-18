@@ -34,3 +34,11 @@
 .filter-remove-btn::after {
   content: "x";
 }
+
+.filter-button {
+  display: none;
+}
+
+.filter-wrapper ~ .filter-button {
+  display: inline-block;
+}
