@@ -44,3 +44,18 @@ let filterDefaults = {
   submitOnFilterDelete: false,
 };
 ```
+
+## change group name
+You can set group name directly in 2 ways:
+- add `filter_group_label` to your custom filter
+```python
+class FFieldCountFilter(django_filters.NumberFilter):
+    filter_group_label = "custom_group_label"
+```
+- use `get_filter_class_with_custom_label`
+```python
+from django_filters_groups.utils import get_filter_class_with_group_label
+
+class MyFilterSet(django_filters.FilterSet):
+  custom_filter = get_filter_class_with_group_label(django_filters.NumberFilter, "hello1111")(label="1123")
+```

@@ -44,15 +44,30 @@ def _filters_by_groups(context, filterset="filter"):
     groups_with_filters = {}
     for field_name, group_dct in filters_by_groups_.items():
         is_field_selected = field_name in selected_fields
+
+        filter_group_label = None
+        for filter_ in group_dct.values():
+            filter_group_label = getattr(filter_, "filter_group_label", None)
+
+        verbose_name = label_for_filter(filter_set._meta.model, list(group_dct.values())[0].field_name, None)
+        if verbose_name == "[invalid name]":
+            filter_ = group_dct.get("exact", list(group_dct.values())[0])
+            verbose_name = filter_.label
+            if verbose_name:
+                lookup_verbose_name = FILTERS_VERBOSE_LOOKUPS.get(filter_.lookup_expr, filter_.lookup_expr)
+                if verbose_name.endswith(" " + lookup_verbose_name):
+                    verbose_name = verbose_name[: -len(" " + lookup_verbose_name)]
+
+        verbose_name = filter_group_label or verbose_name
         groups_with_filters[field_name] = {
-            "verbose_name": list(group_dct.values())[0].label,
+            "verbose_name": filter_group_label or verbose_name,
             "lookups_choice_form": type(
                 f"{field_name.capitalize()}LookupForm",
                 (forms.Form,),
                 {
                     "prefix": lookup_form_prefix,
                     field_name: forms.ChoiceField(
-                        label=label_for_filter(filter_set._meta.model, field_name, None),
+                        label=verbose_name,
                         choices=[
                             *(
                                 [["", "--------"]]
