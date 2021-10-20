@@ -48,19 +48,22 @@ def _filters_by_groups(context, filterset="filter"):
         filter_group_label = None
         for filter_ in group_dct.values():
             filter_group_label = getattr(filter_, "filter_group_label", None)
+            if filter_group_label:
+                break
 
-        verbose_name = label_for_filter(filter_set._meta.model, list(group_dct.values())[0].field_name, None)
-        if verbose_name == "[invalid name]":
-            filter_ = group_dct.get("exact", list(group_dct.values())[0])
-            verbose_name = filter_.label
-            if verbose_name:
-                lookup_verbose_name = FILTERS_VERBOSE_LOOKUPS.get(filter_.lookup_expr, filter_.lookup_expr)
-                if verbose_name.endswith(" " + lookup_verbose_name):
-                    verbose_name = verbose_name[: -len(" " + lookup_verbose_name)]
-
+        filter_ = group_dct.get("exact", list(group_dct.values())[0])
+        if not (verbose_name := getattr(filter_, "_verbose_name", None)):
+            verbose_name = filter_._label
+            if verbose_name is None:
+                verbose_name = label_for_filter(filter_set._meta.model, field_name, None)
         verbose_name = filter_group_label or verbose_name
+
+        # save verbose_name to the filter because this function is called twice.
+        # the filter "_label" will has been already changed in the second time.
+        # it happens in filter "field" property
+        filter_._verbose_name = verbose_name
         groups_with_filters[field_name] = {
-            "verbose_name": filter_group_label or verbose_name,
+            "verbose_name": verbose_name,
             "lookups_choice_form": type(
                 f"{field_name.capitalize()}LookupForm",
                 (forms.Form,),
