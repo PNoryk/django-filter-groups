@@ -23,12 +23,22 @@ class MyFilterSet(django_filters.FilterSet):
     f_field__name__istartswith = django_filters.CharFilter(lookup_expr="istartswith")
 
     custom_filter = FFieldCountFilter(label="1")
-    custom_filter1 = get_filter_class_with_group_label(django_filters.NumberFilter, "hello1111")(label="1123")
+    custom_filter1 = get_filter_class_with_group_label(django_filters.NumberFilter, "custom group name")(
+        label="int_field", method="custom_filter_method"
+    )
+    custom_filter1__isnull = django_filters.NumberFilter(
+        lookup_expr="isnull",
+        label="int_field is null",
+        method="custom_filter_method",
+    )
+
+    @staticmethod
+    def custom_filter_method(queryset, name, value):
+        queryset.filter(**{f"int_field__{name}": value})
 
     class Meta:
         model = TestModel
         fields = {
-            "int_field": ["exact", "isnull"],
             "char_field": ["exact", "isnull"],
             "date_field": ["exact", "isnull"],
             "datetime_field": ["exact", "isnull"],

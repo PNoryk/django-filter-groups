@@ -123,3 +123,16 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+def FILTERS_VERBOSE_LOOKUPS():
+    from django_filters.conf import DEFAULTS
+
+    verbose_lookups = DEFAULTS["VERBOSE_LOOKUPS"].copy()
+    verbose_lookups.update(
+        {
+            "exact": "exact",
+            "iexact": "exact (case insensitive)",
+        }
+    )
+    return verbose_lookups
