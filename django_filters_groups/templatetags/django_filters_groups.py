@@ -56,6 +56,9 @@ def _filters_by_groups(context, filterset="filter"):
             verbose_name = filter_._label
             if verbose_name is None:
                 verbose_name = label_for_filter(filter_set._meta.model, field_name, None)
+            verbose_lookup = " " + FILTERS_VERBOSE_LOOKUPS.get(filter_.lookup_expr, filter_.lookup_expr)
+            if (verbose_name or "").endswith(verbose_lookup):
+                verbose_name = verbose_name[: -len(verbose_lookup)]
         verbose_name = filter_group_label or verbose_name
 
         # save verbose_name to the filter because this function is called twice.
