@@ -52,9 +52,22 @@ or filterset name
 `{% add_select_filter_form_to_context "my_custom_filterset" %}`
 
 ## warning
-It's necessary to add values to `exact` and `iexact` [VERBOSE_LOOKUPS](https://django-filter.readthedocs.io/en/stable/ref/settings.html?highlight=verbose_lookups#filters-verbose-lookups).
+- It's necessary to add values to `exact` and `iexact` [VERBOSE_LOOKUPS](https://django-filter.readthedocs.io/en/stable/ref/settings.html?highlight=verbose_lookups#filters-verbose-lookups). \
+  Filter choice will be empty if the lookups isn't presented
+- It's important to add filter verbose lookup in the end of declared filter label 
+  if `filter_group_label` wasn't added in any filter, 
+  and it's a filter with exact lookup or the first in a group\
+  Default groups of model fields declared in `FilterSet._meta.fields` have normal labels
 
-Filter choice will be empty if the lookups isn't presented
+```python
+# settings.py
+# FILTERS_VERBOSE_LOOKUPS = {"exact": "match"}
+
+class F(django_filters.FilterSet):
+    my_number_filter = django_filters.NumberFilter(label="number match")  # good
+    my_number_filter = django_filters.NumberFilter(label="number")  # bad
+```
+
 
 ## default settings
 
